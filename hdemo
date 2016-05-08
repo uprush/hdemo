@@ -1,0 +1,247 @@
+#!/bin/bash
+
+umask 0022
+
+DEMO_HOME=`dirname $0`
+DEMO_HOME=`cd $DEMO_HOME; pwd`
+
+source $DEMO_HOME/functions.sh
+
+usage_exit() {
+        echo "Usage: $0 [-c command] [-s subcommand] [-e command]"
+        echo
+        echo "-c command [-s subcommand]: run command on specific nodes"
+        echo "Supported commands"
+        # echo "  start-master-instances: start EC2 instances for hadoop masters"
+        # echo "  start-slave-instances: start EC2 instances for hadoop slaves"
+        # echo "  start-metastore: start RDS instance for HCatalog/Hive metastore"
+        echo "  check-reachability: check reachability for all nodes"
+        echo "  distribute-hdemo: distribute hdemo to all nodes"
+        echo "  prepare: prepare for hadoop setup, runs on all nodes"
+        echo "  setup-ambari-server: setup ambari server, run on ambari server"
+        echo "  setup-ambari-agents: setup ambari agent, run on all nodes"
+
+        echo "  ambari-server: start / stop /status ambari server"
+        echo "  ambari-agent: start / stop /status ambari agent"
+
+
+        echo "  tweets: Hive example to copy / create / load / query tweets table"
+        echo "  hellostorm: a simple Strom demo, supported subcommands: package / run"
+        echo
+        echo "-e command: run adhoc command on all nodes"
+        echo
+        exit 1
+}
+
+while getopts c:s:e:h OPT
+do
+    case $OPT in
+        c)  CMD=$OPTARG
+            ;;
+        s)  SUBCMD=$OPTARG
+            ;;
+        e)  RUN_ON_ALL_NODES=1 && CMD=$OPTARG
+            ;;
+        h)  usage_exit
+            ;;
+        *) usage_exit
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [[ "x$CMD" == "x" ]]; then
+    usage_exit
+fi
+
+# functions
+function check-reachability() {
+    for NODE in `cat $DEMO_HOME/conf/cluster/all-nodes`
+    do
+        ssh -o StrictHostKeyChecking=no ubuntu@$NODE "exit" && echo "$NODE    OK"
+        sleep 1
+    done
+}
+
+function distribute-hdemo() {
+    # Distribute setup bundle
+    for NODE in `cat $DEMO_HOME/conf/cluster/all-nodes`
+    do
+        rsync -vzr --delete $DEMO_HOME/ ubuntu@$NODE:$HDEMO_REMOTE_HOME/
+    done
+}
+
+function prepare() {
+    distribute-hdemo
+
+    CMD="sudo $HDEMO_REMOTE_HOME/prepare-env.sh"
+    $DEMO_HOME/exec_cmd -c "$CMD" -t all-nodes
+}
+
+function setup-ambari-server() {
+    CMD="sudo $HDEMO_REMOTE_HOME/setup-ambari-server.sh"
+    $DEMO_HOME/exec_cmd -c "$CMD" -t ambari-server
+}
+
+function setup-ambari-agents() {
+    CMD="sudo $HDEMO_REMOTE_HOME/setup-ambari-agent.sh"
+    $DEMO_HOME/exec_cmd -c "$CMD" -t all-nodes
+}
+
+function ambari-server() {
+    if [[ "x$SUBCMD" == "x" ]]; then
+        usage_exit
+    fi
+
+    case $SUBCMD in
+        status )
+            CMD="sudo ambari-server status"
+            ;;
+        start )
+            CMD="sudo ambari-server start"
+            ;;
+        stop )
+            CMD="sudo ambari-server stop"
+            ;;
+        * )
+            usage_exit
+            ;;
+    esac
+
+    $DEMO_HOME/exec_cmd -c "$CMD" -t ambari-server
+}
+
+function ambari-agent() {
+    if [[ "x$SUBCMD" == "x" ]]; then
+        usage_exit
+    fi
+
+    case $SUBCMD in
+        status )
+            CMD="sudo ambari-agent status"
+            ;;
+        start )
+            CMD="sudo ambari-agent start"
+            ;;
+        stop )
+            CMD="sudo ambari-agent stop"
+            ;;
+        * )
+            usage_exit
+            ;;
+    esac
+
+    $DEMO_HOME/exec_cmd -c "$CMD" -t all-nodes
+}
+
+# function start-master-instances() {
+#     $DEMO_HOME/start-master-instances.sh
+# }
+
+# function start-slave-instances() {
+#     $DEMO_HOME/start-slave-instances.sh
+# }
+
+# function start-metastore() {
+#     $DEMO_HOME/start-metastore.sh
+# }
+
+
+function run_cmd_on_all_nodes() {
+    if [[ $RUN_ON_ALL_NODES != 1 ]]; then
+        usage_exit
+    fi
+    $DEMO_HOME/exec_cmd -c "$CMD" -t all_nodes
+}
+
+
+function tweets() {
+    if [[ "x$SUBCMD" == "x" ]]; then
+        usage_exit
+    fi
+
+    case $SUBCMD in
+        copy )
+            EXEC="sudo -u $HIVE_USER hdfs dfs -copyFromLocal $HDEMO_REMOTE_HOME/data/twitter_data.txt /user/hive"
+            ;;
+        create )
+            EXEC="sudo -u $HIVE_USER hive --hiveconf hive.exec.scratchdir=/tmp/scratch -f $HDEMO_REMOTE_HOME/hql/create_tweets_table.hql"
+            ;;
+        load )
+            EXEC="sudo -u $HIVE_USER hive --hiveconf hive.exec.scratchdir=/tmp/scratch -f $HDEMO_REMOTE_HOME/hql/load_tweets.hql"
+            ;;
+        query )
+            EXEC="sudo -u $HIVE_USER hive --hiveconf hive.exec.scratchdir=/tmp/scratch -f $HDEMO_REMOTE_HOME/hql/query_tweets.hql"
+            ;;
+        * )
+            usage_exit
+            ;;
+    esac
+
+    pdsh -l ubuntu -R ssh -w ^$DEMO_HOME/conf/cluster/masters "$EXEC"
+}
+
+function hellostorm() {
+    if [[ "x$SUBCMD" == "x" ]]; then
+        usage_exit
+    fi
+
+    case $SUBCMD in
+        package )
+            EXEC="$HDEMO_REMOTE_HOME/hellostorm.sh package"
+            ;;
+        run )
+            EXEC="$HDEMO_REMOTE_HOME/hellostorm.sh run"
+            ;;
+        * )
+            usage_exit
+            ;;
+    esac
+
+    pdsh -l ubuntu -R ssh -w ^$DEMO_HOME/conf/cluster/masters "$EXEC"
+}
+
+# main routine
+case $CMD in
+    check-reachability )
+        check-reachability
+        ;;
+    distribute-hdemo )
+        distribute-hdemo
+        ;;
+    prepare )
+        prepare
+        ;;
+    setup-ambari-server )
+        setup-ambari-server
+        ;;
+    setup-ambari-agents )
+        setup-ambari-agents
+        ;;
+    ambari-server )
+        ambari-server
+        ;;
+    ambari-agent )
+        ambari-agent
+        ;;
+    start-master-instances )
+        start-master-instances
+        ;;
+    start-slave-instances )
+        start-slave-instances
+        ;;
+    start-metastore )
+        start-metastore
+        ;;
+    tweets )
+        tweets
+        ;;
+    hellostorm )
+        hellostorm
+        ;;
+    * )
+        run_cmd_on_all_nodes
+        ;;
+esac
+
+

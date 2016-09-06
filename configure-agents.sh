@@ -1,10 +1,10 @@
 #!/bin/bash
 #
 
-SCRIPT_DIR=`dirname $0`
-SCRIPT_DIR=`cd $SCRIPT_DIR; pwd`
+DEMO_HOME=`dirname $0`
+DEMO_HOME=`cd $DEMO_HOME; pwd`
 
-AMBARI_SERVER='ip-10-0-0-17.ap-northeast-1.compute.internal'
+source $DEMO_HOME/functions.sh
 
 CONF_CMD="sed -i s/localhost/$AMBARI_SERVER/g /etc/ambari-agent/conf/ambari-agent.ini"
 echo "Configuring Ambari Server..."

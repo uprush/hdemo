@@ -7,7 +7,11 @@ source $DEMO_HOME/functions.sh
 
 function install_ambari_agent() {
   echo "Installing Ambari Agent..."
-  apt-get -y install ambari-agent
+  if [[ "$OS_FAMILY" == "REDHAT" ]]; then
+    yum -y install ambari-agent
+  else
+    apt-get -y install ambari-agent
+  fi
 }
 
 function configure_ambari_agent() {

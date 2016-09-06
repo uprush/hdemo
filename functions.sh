@@ -16,9 +16,14 @@ function escape_path() {
 }
 
 function setup_open_jdk() {
-  apt-get install -y openjdk-7-jdk
-  mkdir /usr/java
-  ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
+  if [[ "$OS_FAMILY" == "REDHAT" ]]; then
+    echo "OS family ($OS_FAMILY) not supported."
+  else
+    apt-get install -y openjdk-7-jdk
+    mkdir /usr/java
+    ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
+  fi
+
   rm /usr/bin/java
   ln -s /usr/java/default/bin/java /usr/bin/java
 

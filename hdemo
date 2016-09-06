@@ -58,7 +58,7 @@ fi
 function check-reachability() {
     for NODE in `cat $DEMO_HOME/conf/cluster/all-nodes`
     do
-        ssh -o StrictHostKeyChecking=no ubuntu@$NODE "exit" && echo "$NODE    OK"
+        ssh -o StrictHostKeyChecking=no $SSH_USER@$NODE "exit" && echo "$NODE    OK"
         sleep 1
     done
 }
@@ -67,7 +67,7 @@ function distribute-hdemo() {
     # Distribute setup bundle
     for NODE in `cat $DEMO_HOME/conf/cluster/all-nodes`
     do
-        rsync -vzr --delete $DEMO_HOME/ ubuntu@$NODE:$HDEMO_REMOTE_HOME/
+        rsync -vzr --delete $DEMO_HOME/ $SSH_USER@$NODE:$HDEMO_REMOTE_HOME/
     done
 }
 
@@ -151,7 +151,7 @@ function run_cmd_on_all_nodes() {
     if [[ $RUN_ON_ALL_NODES != 1 ]]; then
         usage_exit
     fi
-    $DEMO_HOME/exec_cmd -c "$CMD" -t all_nodes
+    $DEMO_HOME/exec_cmd -c "$CMD" -t all-nodes
 }
 
 
@@ -178,7 +178,7 @@ function tweets() {
             ;;
     esac
 
-    pdsh -l ubuntu -R ssh -w ^$DEMO_HOME/conf/cluster/masters "$EXEC"
+    pdsh -l $SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/masters "$EXEC"
 }
 
 function hellostorm() {
@@ -198,7 +198,7 @@ function hellostorm() {
             ;;
     esac
 
-    pdsh -l ubuntu -R ssh -w ^$DEMO_HOME/conf/cluster/masters "$EXEC"
+    pdsh -l $SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/masters "$EXEC"
 }
 
 # main routine

@@ -1,8 +1,10 @@
 #!/bin/bash
 #
 
-SCRIPT_DIR=`dirname $0`
-SCRIPT_DIR=`cd $SCRIPT_DIR; pwd`
+DEMO_HOME=`dirname $0`
+DEMO_HOME=`cd $DEMO_HOME; pwd`
+
+source $DEMO_HOME/functions.sh
 
 usage_exit() {
         echo "Usage: $0 -c command [-t targets] [-u user]"
@@ -19,7 +21,7 @@ do
             ;;
         t)  TARGETS=$OPTARG
             ;;
-        u)  SSH_USER=$OPTARG
+        u)  MY_SSH_USER=$OPTARG
             ;;
         h)  usage_exit
             ;;
@@ -37,15 +39,15 @@ if [[ "x$TARGETS" == "x" ]]; then
     TARGETS="slaves"
 fi
 
-if [[ "x$SSH_USER" == "x" ]]; then
-    SSH_USER="ubuntu"
+if [[ "x$MY_SSH_USER" == "x" ]]; then
+    MY_SSH_USER=$SSH_USER
 fi
 
 echo
-echo "Executing command [ $CMD ] on nodes [ $TARGETS ] as user [ $SSH_USER ] ..."
+echo "Executing command [ $CMD ] on nodes [ $TARGETS ] as user [ $MY_SSH_USER ] ..."
 
 echo
-pdsh -l $SSH_USER -R ssh -w ^$SCRIPT_DIR/conf/cluster/$TARGETS "$CMD"
+pdsh -l $MY_SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/$TARGETS "$CMD"
 
 echo
 echo "DONE"

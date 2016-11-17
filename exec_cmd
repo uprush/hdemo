@@ -47,6 +47,7 @@ echo
 echo "Executing command [ $CMD ] on nodes [ $TARGETS ] as user [ $MY_SSH_USER ] ..."
 
 echo
+export PDSH_SSH_ARGS_APPEND="-p20022"
 pdsh -l $MY_SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/$TARGETS "$CMD"
 
 echo

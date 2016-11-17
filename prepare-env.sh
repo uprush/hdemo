@@ -13,7 +13,7 @@ function config_repo() {
     wget -nv $HDP_REPO -O /etc/yum.repos.d/ambari.repo
   else
     wget $HDP_REPO -O /etc/apt/sources.list.d/ambari.list
-    apt-key adv --recv-keys --keyserver keyserver.ubuntu.com B9733A7A07513CAD
+#    apt-key adv --recv-keys --keyserver keyserver.ubuntu.com B9733A7A07513CAD
     apt-get update
   fi
 }

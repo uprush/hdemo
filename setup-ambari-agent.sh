@@ -10,7 +10,7 @@ function install_ambari_agent() {
   if [[ "$OS_FAMILY" == "REDHAT" ]]; then
     yum -y install ambari-agent
   else
-    apt-get -y install ambari-agent
+    apt-get -y --force-yes install ambari-agent
   fi
 }
 

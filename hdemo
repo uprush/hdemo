@@ -25,8 +25,6 @@ usage_exit() {
         echo "  ambari-agent: start / stop /status ambari agent"
 
 
-        echo "  tweets: Hive example to copy / create / load / query tweets table"
-        echo "  hellostorm: a simple Strom demo, supported subcommands: package / run"
         echo
         echo "-e command: run adhoc command on all nodes"
         echo
@@ -155,52 +153,6 @@ function run_cmd_on_all_nodes() {
 }
 
 
-function tweets() {
-    if [[ "x$SUBCMD" == "x" ]]; then
-        usage_exit
-    fi
-
-    case $SUBCMD in
-        copy )
-            EXEC="sudo -u $HIVE_USER hdfs dfs -copyFromLocal $HDEMO_REMOTE_HOME/data/twitter_data.txt /user/hive"
-            ;;
-        create )
-            EXEC="sudo -u $HIVE_USER hive --hiveconf hive.exec.scratchdir=/tmp/scratch -f $HDEMO_REMOTE_HOME/hql/create_tweets_table.hql"
-            ;;
-        load )
-            EXEC="sudo -u $HIVE_USER hive --hiveconf hive.exec.scratchdir=/tmp/scratch -f $HDEMO_REMOTE_HOME/hql/load_tweets.hql"
-            ;;
-        query )
-            EXEC="sudo -u $HIVE_USER hive --hiveconf hive.exec.scratchdir=/tmp/scratch -f $HDEMO_REMOTE_HOME/hql/query_tweets.hql"
-            ;;
-        * )
-            usage_exit
-            ;;
-    esac
-
-    pdsh -l $SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/masters "$EXEC"
-}
-
-function hellostorm() {
-    if [[ "x$SUBCMD" == "x" ]]; then
-        usage_exit
-    fi
-
-    case $SUBCMD in
-        package )
-            EXEC="$HDEMO_REMOTE_HOME/hellostorm.sh package"
-            ;;
-        run )
-            EXEC="$HDEMO_REMOTE_HOME/hellostorm.sh run"
-            ;;
-        * )
-            usage_exit
-            ;;
-    esac
-
-    pdsh -l $SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/masters "$EXEC"
-}
-
 # main routine
 case $CMD in
     check-reachability )
@@ -232,12 +184,6 @@ case $CMD in
         ;;
     start-metastore )
         start-metastore
-        ;;
-    tweets )
-        tweets
-        ;;
-    hellostorm )
-        hellostorm
         ;;
     * )
         run_cmd_on_all_nodes

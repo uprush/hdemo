@@ -22,7 +22,7 @@ usage_exit() {
         echo "  setup-ambari-agents: setup ambari agent, run on all nodes"
 
         echo "  ambari-server: start / stop /status ambari server"
-        echo "  ambari-agent: start / stop /status ambari agent"
+        echo "  ambari-agents: start / stop /status ambari agent"
 
         echo
         echo "-e command: run adhoc command on all nodes"
@@ -108,7 +108,7 @@ function ambari-server() {
     $DEMO_HOME/exec_cmd -c "$CMD" -t ambari-server
 }
 
-function ambari-agent() {
+function ambari-agents() {
     if [[ "x$SUBCMD" == "x" ]]; then
         usage_exit
     fi
@@ -172,17 +172,8 @@ case $CMD in
     ambari-server )
         ambari-server
         ;;
-    ambari-agent )
-        ambari-agent
-        ;;
-    start-master-instances )
-        start-master-instances
-        ;;
-    start-slave-instances )
-        start-slave-instances
-        ;;
-    start-metastore )
-        start-metastore
+    ambari-agents )
+        ambari-agents
         ;;
     * )
         run_cmd_on_all_nodes

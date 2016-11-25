@@ -51,7 +51,7 @@ echo
 echo "Executing command [ $CMD ] on nodes [ $TARGETS ] port [ $HD_SSH_PORT ] as user [ $MY_SSH_USER ] ..."
 echo
 
-# pdsh -l $MY_SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/$TARGETS "$CMD"
+pdsh -l $MY_SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/$TARGETS "$CMD"
 
 echo
 echo "DONE"

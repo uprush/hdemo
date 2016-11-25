@@ -9,9 +9,9 @@ source $DEMO_HOME/functions.sh
 CONF_CMD="sed -i s/localhost/$AMBARI_SERVER/g /etc/ambari-agent/conf/ambari-agent.ini"
 echo "Configuring Ambari Server..."
 echo
-$SCRIPT_DIR/exec -c "$CONF_CMD" -t all
+$SCRIPT_DIR/exec_cmd -c "$CONF_CMD" -t all-nodes
 
 echo "Restarting Ambari Agent..."
 echo
 RESTART_CMD="ambari-agent restart"
-$SCRIPT_DIR/exec -c "$RESTART_CMD" -t all
+$SCRIPT_DIR/exec_cmd -c "$RESTART_CMD" -t all-nodes

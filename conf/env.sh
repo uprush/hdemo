@@ -22,6 +22,8 @@ else
   SSH_USER="ubuntu"
 fi
 
+HD_SSH_PORT="22"
+
 HDEMO_REMOTE_HOME=/home/$SSH_USER/hdemo
 
 
@@ -32,6 +34,7 @@ echo "AMBARI_SERVER: $AMBARI_SERVER"
 echo "HDP_REPO: $HDP_REPO"
 echo "OS_FAMILY: $OS_FAMILY"
 echo "SSH_USER: $SSH_USER"
+echo "SSH_PORT: $HD_SSH_PORT"
 echo "HDEMO_REMOTE_HOME: $HDEMO_REMOTE_HOME"
 
 echo "==== Environment Variables ===="

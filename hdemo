@@ -24,7 +24,6 @@ usage_exit() {
         echo "  ambari-server: start / stop /status ambari server"
         echo "  ambari-agent: start / stop /status ambari agent"
 
-
         echo
         echo "-e command: run adhoc command on all nodes"
         echo
@@ -56,7 +55,7 @@ fi
 function check-reachability() {
     for NODE in `cat $DEMO_HOME/conf/cluster/all-nodes`
     do
-        ssh -p 20022 -o StrictHostKeyChecking=no $SSH_USER@$NODE "exit" && echo "$NODE    OK"
+        ssh -p $HD_SSH_PORT -o StrictHostKeyChecking=no $SSH_USER@$NODE "exit" && echo "$NODE    OK"
         sleep 1
     done
 }
@@ -65,7 +64,7 @@ function distribute-hdemo() {
     # Distribute setup bundle
     for NODE in `cat $DEMO_HOME/conf/cluster/all-nodes`
     do
-        rsync -vzr -e "ssh -p 20022" --delete $DEMO_HOME/ $SSH_USER@$NODE:$HDEMO_REMOTE_HOME/
+        rsync -vzr -e "ssh -p $HD_SSH_PORT" --delete $DEMO_HOME/ $SSH_USER@$NODE:$HDEMO_REMOTE_HOME/
     done
 }
 

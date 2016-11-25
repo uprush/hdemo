@@ -36,19 +36,22 @@ if [[ "x$CMD" == "x" ]]; then
 fi
 
 if [[ "x$TARGETS" == "x" ]]; then
-    TARGETS="slaves"
+    TARGETS="all-nodes"
 fi
 
 if [[ "x$MY_SSH_USER" == "x" ]]; then
     MY_SSH_USER=$SSH_USER
 fi
 
-echo
-echo "Executing command [ $CMD ] on nodes [ $TARGETS ] as user [ $MY_SSH_USER ] ..."
+if [[ "x$HD_SSH_PORT" != "22" ]]; then
+    export PDSH_SSH_ARGS_APPEND="-p${HD_SSH_PORT}"
+fi
 
 echo
-export PDSH_SSH_ARGS_APPEND="-p20022"
-pdsh -l $MY_SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/$TARGETS "$CMD"
+echo "Executing command [ $CMD ] on nodes [ $TARGETS ] port [ $HD_SSH_PORT ] as user [ $MY_SSH_USER ] ..."
+echo
+
+# pdsh -l $MY_SSH_USER -R ssh -w ^$DEMO_HOME/conf/cluster/$TARGETS "$CMD"
 
 echo
 echo "DONE"

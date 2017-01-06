@@ -1,7 +1,7 @@
 #!/bin/bash
 
 AMBARI_VERSION="2.4.2.0"
-AMBARI_SERVER="ip-10-0-0-250.ap-northeast-1.compute.internal"
+AMBARI_SERVER="ip-10-0-0-104.ap-northeast-1.compute.internal"
 
 OS_FAMILY="DEBIAN"
 if [ -f /etc/redhat-release ]; then
@@ -17,10 +17,12 @@ fi
 
 
 if [[ "$OS_FAMILY" == "REDHAT" ]]; then
-  SSH_USER="centos"
+  SSH_USER="ec2-user"
 else
   SSH_USER="ubuntu"
 fi
+
+SSH_USER="ec2-user"
 
 HD_SSH_PORT="22"
 

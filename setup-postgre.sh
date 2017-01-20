@@ -42,6 +42,9 @@ sed -i 's/host\s*all\s*postgres\s*127\.0\.0\.1\/32\s*ident/host    all   postgre
 sed -i 's/host\s*all\s*postgres\s*::1\/128\s*ident/host    all   postgres             ::1\/128                 md5/' /var/lib/pgsql/data/pg_hba.conf
 service postgresql reload
 
+# config jdbc
+ambari-server setup --jdbc-db=postgres --jdbc-driver=/usr/lib/ambari-server/postgresql-9.3-1101-jdbc4.jar
+
 # some test
 su - postgres -c "psql -c '\l'"
 #psql hive -U hive -W -p 5432 -h localhost -c "\l"

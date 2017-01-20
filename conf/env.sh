@@ -1,7 +1,8 @@
 #!/bin/bash
 
 AMBARI_VERSION="2.4.2.0"
-AMBARI_SERVER="ip-10-0-0-104.ap-northeast-1.compute.internal"
+AMBARI_SERVER="ip-10-0-0-149.ap-northeast-1.compute.internal"
+MASTER_PWD="changeME"
 
 OS_FAMILY="DEBIAN"
 if [ -f /etc/redhat-release ]; then

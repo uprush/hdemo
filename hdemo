@@ -20,6 +20,7 @@ usage_exit() {
         echo "  prepare: prepare for hadoop setup, runs on all nodes"
         echo "  setup-ambari-server: setup ambari server, run on ambari server"
         echo "  setup-ambari-agents: setup ambari agent, run on all nodes"
+        echo "  setup-postgre: setup postgresql for metadb, run on ambari server"
 
         echo "  ambari-server: start / stop /status ambari server"
         echo "  ambari-agents: start / stop /status ambari agent"
@@ -83,6 +84,11 @@ function setup-ambari-server() {
 function setup-ambari-agents() {
     CMD="sudo $HDEMO_REMOTE_HOME/setup-ambari-agent.sh"
     $DEMO_HOME/exec_cmd -c "$CMD" -t all-nodes
+}
+
+function setup-postgre() {
+    CMD="sudo $HDEMO_REMOTE_HOME/setup-postgre.sh"
+    $DEMO_HOME/exec_cmd -c "$CMD" -t ambari-server
 }
 
 function ambari-server() {
@@ -168,6 +174,9 @@ case $CMD in
         ;;
     setup-ambari-agents )
         setup-ambari-agents
+        ;;
+    setup-postgre )
+        setup-postgre
         ;;
     ambari-server )
         ambari-server

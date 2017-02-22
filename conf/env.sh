@@ -1,13 +1,14 @@
 #!/bin/bash
 
 AMBARI_VERSION="2.4.2.0"
-AMBARI_SERVER="ip-10-0-0-149.ap-northeast-1.compute.internal"
+AMBARI_SERVER="node1.example.com"
 MASTER_PWD="changeME"
 
-OS_FAMILY="DEBIAN"
-if [ -f /etc/redhat-release ]; then
-  OS_FAMILY="REDHAT"
-fi
+OS_FAMILY="REDHAT"
+#OS_FAMILY="DEBIAN"
+#if [ -f /etc/redhat-release ]; then
+#  OS_FAMILY="REDHAT"
+#fi
 
 ## HDP repository
 if [[ "$OS_FAMILY" == "REDHAT" ]]; then
@@ -18,14 +19,15 @@ fi
 
 
 if [[ "$OS_FAMILY" == "REDHAT" ]]; then
-  SSH_USER="ec2-user"
+  #SSH_USER="ec2-user"
+  SSH_USER="centos"
 else
   SSH_USER="ubuntu"
 fi
 
-SSH_USER="ec2-user"
-
+SSH_USER="centos"
 HD_SSH_PORT="22"
+HD_SSH_KEY="~/.ssh/id_rsa"
 
 HDEMO_REMOTE_HOME=/home/$SSH_USER/hdemo
 
@@ -38,6 +40,7 @@ echo "HDP_REPO: $HDP_REPO"
 echo "OS_FAMILY: $OS_FAMILY"
 echo "SSH_USER: $SSH_USER"
 echo "SSH_PORT: $HD_SSH_PORT"
+echo "SSH_KEY: $HD_SSH_KEY"
 echo "HDEMO_REMOTE_HOME: $HDEMO_REMOTE_HOME"
 
 echo "==== Environment Variables ===="

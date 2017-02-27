@@ -7,7 +7,7 @@
 * Allow the super user account to run all commands without password on all nodes. E.g., on CentOS, Add the super user account to `wheel` groud. Allow it to run all commands without password. Run `sudo visudo`, then uncomment the below
 
 ```
-usermod -a -G centos wheel
+usermod -a -G wheel centos
 
 visudo
 

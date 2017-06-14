@@ -1,5 +1,7 @@
-# HDP Install Checklist
+# Yet Another Unofficial HDP Install Checklist
+This is a unofficial HDP install checklist. It should work but use it carefully and adjust to your environment.
 
+## Basic Settings
 * Get a list of all hostnames and IP addresses.
 
 * Create a super user account (e.g., centos, do NOT use root account) and configure it to be able to password-less ssh to all other nodes from Ambari server node.
@@ -117,11 +119,11 @@ systemctl enable ntpd
 systemctl start ntpd
 ```
 
-# Local Storages
+## Local Storages
 Make sure local storages (HDDs, SSDs) are correctly formated and mounted to the OS. XFS is recommended.
 
 Here is an [example storage setup](https://github.com/uprush/hdemo/blob/master/mount-storages.sh).
 
-# Advanced Kernel and Network Settings
+## Advanced Kernel and Network Settings
 Here is an [example of advanced kernel and network settings](https://github.com/uprush/hdemo/blob/master/setup-kernel.sh). Use it carefully and adjust to your environment.
 

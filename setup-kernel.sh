@@ -31,4 +31,5 @@ sysctl -w "net.ipv4.conf.lo.forwarding=0"
 sysctl -w "vm.dirty_background_ratio=80"
 sysctl -w "vm.dirty_ratio=80"
 sysctl -w "vm.swappiness=1"
-
+sysctl -w net.ipv4.tcp_tw_recycle = 1
+sysctl -w net.ipv4.tcp_tw_reuse = 1

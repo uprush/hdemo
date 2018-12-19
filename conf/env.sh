@@ -1,14 +1,15 @@
 #!/bin/bash
 
-AMBARI_VERSION="2.4.2.0"
+AMBARI_VERSION="2.7.3.0"
 AMBARI_SERVER="node1.example.com"
 MASTER_PWD="changeME"
+POSTGRE_VERSION="10"
 
 OS_FAMILY="REDHAT"
 #OS_FAMILY="DEBIAN"
-#if [ -f /etc/redhat-release ]; then
-#  OS_FAMILY="REDHAT"
-#fi
+if [ -f /etc/debian_version ]; then
+  OS_FAMILY="DEBIAN"
+fi
 
 ## HDP repository
 if [[ "$OS_FAMILY" == "REDHAT" ]]; then
@@ -25,7 +26,7 @@ else
   SSH_USER="ubuntu"
 fi
 
-SSH_USER="centos"
+#SSH_USER="centos"
 HD_SSH_PORT="22"
 HD_SSH_KEY="~/.ssh/id_rsa"
 
